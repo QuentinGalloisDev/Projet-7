@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="index.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Manrope&display=swap" rel="stylesheet">
+
+    <title>Les petits plats</title>
+</head>
+
+<body>
+    <header>
+        <svg class="logo"></svg>
+        <h1>CHERCHEZ PARMI PLUS DE 1500 RECETTES DU QUOTIDIEN,SIMPLES ET DÉLICIEUSES</h1>
+        <div class="searchBarre"><label for="recipeSearch"></label>
+            <input type="search" id="recipeSearch">
+            <svg class="loop"></svg>
+        </div>
+
+    </header>
+    <div class="select-box">
+        <div class="select-option">
+            <input type="text" placeholder="Select" id="soValue" readonly name="">
+        </div>
+        <div class="content">
+            <div class="search">
+                <input type="text" id="optionSearch" placeholder="Search">
+            </div>
+            <ul class="options">
+                <li>sauce</li>
+                <li>moutarde</li>
+                <li>mayo</li>
+            </ul>
+        </div>
+    </div>
+    <div class="tags"></div>
+    <div class="recipesContainer"></div>
+
+    <script src="scripts/service/api.js"></script>
+    <script src="scripts/models/recipe.js"></script>
+    <script src="scripts/patterns/recipePattern.js"></script>
+    <script src="scripts/index.js"></script>
+
+</body>
+
+</html>

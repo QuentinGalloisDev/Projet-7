@@ -1,0 +1,243 @@
+body {
+    font-family: 'Manrope', sans-serif;
+    margin: 0px;
+    background-color: #EDEDED;
+}
+
+body h1 {
+    font-family: 'Anton', sans-serif;
+}
+
+header {
+    background-image: url('Images/PhotosLesPetitsPlats/header.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+    display: flex;
+    flex-direction: column;
+    height: 580px;
+}
+
+header .logo {
+    background-image: url('Images/icones/Logo.svg');
+    background-repeat: no-repeat;
+    margin: 30px 30px;
+}
+
+header .searchBarre {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+}
+
+header .loop {
+    background-image: url('Images/icones/Loop.svg');
+    background-repeat: no-repeat;
+    background-size: contain;
+    height: 50px;
+    width: 50px;
+    position: relative;
+    left: -53px;
+    align-self: center;
+}
+
+header h1 {
+    color: #FFD15B;
+    align-self: center;
+    font-weight: 400;
+    font-size: 44px;
+    width: 50%;
+    text-align: center;
+}
+
+header #recipeSearch {
+    height: 70px;
+    width: 60%;
+    align-self: center;
+    font-size: 16px;
+    font-weight: 400;
+    border-radius: 12px;
+}
+
+/* Custom select with search */
+.select-box {
+    margin-top: 15px;
+    width: 22%;
+}
+
+.select-option {
+    position: relative;
+}
+
+.select-option input {
+    width: 100%;
+    background-color: #fff;
+    color: #000;
+    border: 1px solid #000;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 22px;
+    padding: 15px 20px;
+}
+
+.select-option::after {
+    content: "";
+    border-top: 12px solid #000;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    margin-top: -8px;
+}
+
+.content {
+    background-color: #fff;
+    position: absolute;
+    color: #000;
+    border-radius: 0px 0px 5px 5px;
+    width: 22%;
+    z-index: 999;
+    display: none;
+}
+
+.search input {
+    width: 90%;
+    font-size: 17px;
+    padding: 16px;
+    outline: 0;
+    border: 1px solid #C6C6C6;
+    ;
+}
+
+.options {
+    margin-top: 10px;
+    max-height: 250px;
+    overflow-y: auto;
+    padding: 0;
+}
+
+.options li {
+    padding: 10px 15px;
+    border-radius: 5px;
+    font-size: 21px;
+    cursor: pointer;
+}
+
+.tagSelected {
+    list-style-type: none;
+    background-color: #FFD15B;
+    padding: 10px 15px;
+    margin-top: 2px;
+    border-radius: 5px;
+    font-size: 21px;
+}
+
+.tags {
+    display: flex;
+}
+
+.tags .tagSelected {
+    margin: 10px;
+    display: flex;
+    width: 15%;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.tags .tagSelected .closeTag {
+    background-image: url("Images/icones/closeTag.svg");
+    background-repeat: no-repeat;
+    background-position: center;
+    height: 30px;
+    width: 30px;
+    cursor: pointer;
+}
+
+.options li:hover {
+    background-color: #f2f2f2;
+
+}
+
+.select-box.active .content {
+    display: block;
+    border: 1px solid black;
+    border-top: none;
+    padding: 15px 18px;
+}
+
+.select-box.active .select-option::after {
+    transform: rotate(-180deg);
+}
+
+.select-box.active .select-option input {
+    border-bottom: none;
+    border-radius: 5px 5px 0px 0px;
+}
+
+/* Custom select with search */
+
+/* main */
+
+.recipesContainer {
+    display: flex;
+    width: 100%;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin-top: 35px;
+}
+
+.cardRecipe {
+    width: 30%;
+    display: flex;
+    flex-direction: column;
+    border-radius: 21px;
+    background-color: #FFFFFF;
+    margin-bottom: 22px;
+}
+
+.cardRecipe *:not(img) {
+    padding: 0px 15px;
+}
+
+.cardRecipe img {
+    width: 100%;
+    height: 253px;
+    object-position: center;
+    object-fit: cover;
+    border-radius: 21px 21px 0px 0px;
+}
+
+.cardRecipe h2 {
+    font-size: 16px;
+    color: #7A7A7A;
+}
+
+/* .cardRecipe p {
+    height: 100%;
+} */
+
+.cardRecipe ul {
+    display: flex;
+    flex-direction: row;
+    list-style-type: none;
+    flex-wrap: wrap;
+    padding: 0;
+    height: 200px;
+}
+
+.cardRecipe li {
+    height: 30%;
+    width: 40%;
+    display: flex;
+    flex-direction: column;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.cardRecipe li span {
+    padding: 0px;
+    color: #7A7A7A;
+    font-weight: 400;
+}
+
+/* main */
