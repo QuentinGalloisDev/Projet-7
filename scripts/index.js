@@ -103,6 +103,7 @@ class App {
     constructor() {
         this.$recipesContainer = document.querySelector(".recipesContainer")
         this.$header = document.querySelector("header")
+        this.$selects = document.querySelector(".selects")
         // Insérer le select après le header
         this.recipeApi = new recipeApi('/PetitsPlats/recipes.json')
 
@@ -113,8 +114,12 @@ class App {
             const card = new recipeCard(recipe)
             this.$recipesContainer.appendChild(card.CreateRecipeCard())
         })
+        //Créer un tableau de tout les ingrédients
         let recupTagListsIngredients = await this.recipeApi.getTagIngredients("ingredients")
-        console.log(recupTagListsIngredients)
+        // Pour chaque ingrédients, créer un élément li dans lequel il y a un ingrédient
+        const selectTagIngredients = new Select(recupTagListsIngredients)
+        this.$selects.appendChild(selectTagIngredients.CreateSelectBox())
+        // console.log(recupTagListsIngredients)
     }
 }
 const app = new App()

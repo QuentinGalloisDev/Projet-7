@@ -59,7 +59,12 @@ header #recipeSearch {
 }
 
 /* Custom select with search */
-.select-box {
+.selects {
+    display: flex;
+    justify-content: space-around;
+}
+
+.select-box-ingredients {
     margin-top: 15px;
     width: 22%;
 }
@@ -158,17 +163,21 @@ header #recipeSearch {
 
 }
 
+.select-box-ingredients.active .content,
 .select-box.active .content {
     display: block;
     border: 1px solid black;
     border-top: none;
-    padding: 15px 18px;
+    padding: 15px 20px;
+    width: 100%;
 }
 
+.select-box-ingredients.active .select-option::after,
 .select-box.active .select-option::after {
     transform: rotate(-180deg);
 }
 
+.select-box-ingredients.active .select-option input,
 .select-box.active .select-option input {
     border-bottom: none;
     border-radius: 5px 5px 0px 0px;

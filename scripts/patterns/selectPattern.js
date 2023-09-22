@@ -4,33 +4,40 @@ class Select {
         this._tags = tags
     }
     CreateSelectBox() {
-        const selectBox = document.createElement("div")
-        selectBox.setAttribute("class", ".select-box")
+        const selectBox = document.querySelector(`.select-box-ingredients`)
+        // selectBox.setAttribute("class", `select-box`)
         selectBox.insertAdjacentHTML("afterbegin",
-            `<div class="select-option>
+            `<div class="select-option">
         <input type="text" placeholder="Select" id="soValue" readonly="" name="">
-        <div>
+        </div>
         <div class="content">
             <div class="search">
                 <input type="text" id="optionSearch" placeholder="Search">
             </div>
             <ul class="options">
-                <li>tag 1</li>
-                <li>tag 2</li>
-                <li>tag 3</li>
             </ul>
-        </div>`)
-        //     const selectBox = document.querySelector(".select-box")
-        // const selectOption = document.querySelector(".select-option")
-        // const soValue = document.querySelector("#soValue")
-        // const optionSearch = document.querySelector("#optionSearch")
-        // const options = document.querySelector(".options")
-        // let optionsList = document.querySelectorAll(".options li")
-        // const tagsDiv = document.querySelector(".tags")
+        </div>
+        `)
+        //    const selectBox = document.querySelector(".select-box")
+        const selectOption = document.querySelector(".select-option")
+        const soValue = document.querySelector("#soValue")
+        const optionSearch = document.querySelector("#optionSearch")
+        const options = document.querySelector(".options")
+        // this._tags va renvoyer un tableau des ingrédients.
+        this._tags.map(tagIngredient => {
+
+            options.insertAdjacentHTML("afterbegin", `<li>${tagIngredient}</li>`)
+
+        })
+
+        let optionsList = document.querySelectorAll(".options li")
+        const tagsDiv = document.querySelector(".tags")
 
         selectOption.addEventListener("click", (e) => {
+            e.preventDefault()
             selectBox.classList.toggle('active')
         })
+
         // au clic sur une option on prend la valeur du texte cliqué qu'on stocke qu'on stocke dans text
         optionsList.forEach((optionsListStringLe) => {
             optionsListStringLe.addEventListener("click", (e) => {
@@ -96,7 +103,7 @@ class Select {
             filter = optionSearch.value.toUpperCase()
             li = options.getElementsByTagName("li")
             for (i = 0; i < li.length; i++) {
-                liCount = li[i];
+                let liCount = li[i];
                 textvalue = liCount.innerHTML
                 //Si l'élément cherché n'est pas présent dans le tableau, indexOf renverra -1.
                 if (textvalue.toUpperCase().indexOf(filter) > -1) {
@@ -107,6 +114,7 @@ class Select {
                 }
             }
         })
+        return selectBox
     }
 }
 
