@@ -64,7 +64,9 @@ header #recipeSearch {
     justify-content: space-around;
 }
 
-.select-box-ingredients {
+.select-box-ingredients,
+.select-box-ustensils,
+.select-box-appliance {
     margin-top: 15px;
     width: 22%;
 }
@@ -164,21 +166,24 @@ header #recipeSearch {
 }
 
 .select-box-ingredients.active .content,
-.select-box.active .content {
+.select-box-ustensils.active .content,
+.select-box-appliance.active .content {
     display: block;
     border: 1px solid black;
     border-top: none;
     padding: 15px 20px;
-    width: 100%;
+    width: 22%;
 }
 
 .select-box-ingredients.active .select-option::after,
-.select-box.active .select-option::after {
+.select-box-ustensils.active .select-option::after,
+.select-box-appliance.active .select-option::after {
     transform: rotate(-180deg);
 }
 
 .select-box-ingredients.active .select-option input,
-.select-box.active .select-option input {
+.select-box-ustensils.active .select-option input,
+.select-box-appliance.active .select-option input {
     border-bottom: none;
     border-radius: 5px 5px 0px 0px;
 }

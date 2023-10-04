@@ -1,10 +1,20 @@
 //Le select avec la barre de recherche.
 class Select {
-    constructor(tags) {
+    constructor(tags, classe, TagSelectedByUser) {
         this._tags = tags
+        this._class = classe
+        this._tagSelected = TagSelectedByUser
     }
-    CreateSelectBox() {
-        const selectBox = document.querySelector(`.select-box-ingredients`)
+
+    // TagSelectedByUser(testText, tableau) {
+    //     // tableau = []
+    //     tableau.push(testText)
+    //     console.log(tableau)
+    //     return tableau
+    // }
+    createSelectBox() {
+
+        const selectBox = document.querySelector(`.select-box-${this._class}`)
         // selectBox.setAttribute("class", `select-box`)
         selectBox.insertAdjacentHTML("afterbegin",
             `<div class="select-option">
@@ -19,10 +29,10 @@ class Select {
         </div>
         `)
         //    const selectBox = document.querySelector(".select-box")
-        const selectOption = document.querySelector(".select-option")
-        const soValue = document.querySelector("#soValue")
-        const optionSearch = document.querySelector("#optionSearch")
-        const options = document.querySelector(".options")
+        const selectOption = document.querySelector(`.select-box-${this._class} .select-option`)
+        const soValue = document.querySelector(`.select-box-${this._class} #soValue`)
+        const optionSearch = document.querySelector(`.select-box-${this._class} #optionSearch`)
+        const options = document.querySelector(`.select-box-${this._class} .options`)
         // this._tags va renvoyer un tableau des ingrédients.
         this._tags.map(tagIngredient => {
 
@@ -30,7 +40,7 @@ class Select {
 
         })
 
-        let optionsList = document.querySelectorAll(".options li")
+        let optionsList = document.querySelectorAll(`.select-box-${this._class} .options li`)
         const tagsDiv = document.querySelector(".tags")
 
         selectOption.addEventListener("click", (e) => {
@@ -38,18 +48,25 @@ class Select {
             selectBox.classList.toggle('active')
         })
 
+        let tab = []
+
         // au clic sur une option on prend la valeur du texte cliqué qu'on stocke qu'on stocke dans text
         optionsList.forEach((optionsListStringLe) => {
             optionsListStringLe.addEventListener("click", (e) => {
                 let text = optionsListStringLe.innerHTML;
                 soValue.value = text
+                // tagSelectedByUser(text)
+                // On utilise une fonction de rappel pour récupérer les tags.
+                tab.push(text)
+                this._tagSelected = tab
+
                 // Au clique sur un élément on place l'élément cliqué en dessous de la barre de recherche 
                 // optionsListStringLe.remove()
                 optionsListStringLe.style.display = "none"
 
                 optionsList = document.querySelectorAll(".options li")
-                console.log(optionsList)
-                console.log(optionsListStringLe)
+                // console.log(optionsList)
+                // console.log(optionsListStringLe)
 
                 let tagsSelected = document.createElement("li")
                 tagsSelected.setAttribute("class", `tagSelected`)
@@ -75,16 +92,22 @@ class Select {
                         elementParent.remove()
 
                         //On récupére l'élément texte du paragraphe à fermer
-                        let tagToClose = closeTag.parentNode.innerHTML
+                        let tagToClose = closeTag.parentNode.innerText
                         toString(tagToClose)
-                        const afterTag = tagToClose.split(" ")
-                        let justTag = afterTag[0]
+                        // console.log(tagToClose)
+                        // On supprime le dernier espace du innerText pour que justTag corresponde bien au innerText du tag recherché dans la liste des tag déjà sélectionné
+                        let justTag = tagToClose.slice(0, tagToClose.length - 1)
+                        // console.log(justTag)
 
                         // Exemple justTag = sauce
+                        // supprime l'élément tag du tableau
+                        tab = tab.filter((word) => word !== justTag)
+                        this._tagSelected = tab
                         //Supprime l'élément dans la liste qui correspond au tag que l'utilisateur souhaite supprimer
                         let tagSelectedSearch = document.querySelectorAll(".search .tagSelected")
+                        // console.log(tagSelectedSearch)
                         tagSelectedSearch.forEach(tag => {
-                            if (tag.innerHTML == justTag) {
+                            if (tag.innerText == justTag) {
                                 tag.remove()
                                 optionsListStringLe.style.display = "block"
                             }

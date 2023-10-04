@@ -1,4 +1,4 @@
-class api {
+class Api {
     constructor(url) {
         this._url = url
     }
@@ -10,18 +10,18 @@ class api {
     }
 }
 //Récupère toutes les recettes
-class recipeApi extends api {
+class RecipeApi extends Api {
     constructor(url) {
         super(url)
     }
     async getRecipes() {
-        console.log(await this.get())
+        // console.log(await this.get())
         return await this.get()
     }
-    async getTagIngredients(ingredients) {
+    async getTagIngredients(recipes) {
         // Créer un tableau avec tout les ingrédients
-        let recipes = await this.get()
-        ingredients = []
+        // let recipes = await this.get()
+        let ingredients = []
         recipes.map(e => {
             e.ingredients.map(element => {
                 ingredients.push(element.ingredient)
@@ -29,11 +29,36 @@ class recipeApi extends api {
 
         })
         // console.log(tag)
-        let unique = [...new Set(ingredients)]
-        return unique
         // Retourner un tableau sans doublon
-
+        let uniqueIngredient = [...new Set(ingredients)]
+        return uniqueIngredient
     }
+    async getTagAppliance() {
+        let recipes = await this.get()
+        let appliances = []
+        recipes.map(e => {
+            appliances.push(e.appliance)
+        })
+        let uniqueAppliance = [...new Set(appliances)]
+        return uniqueAppliance
+    }
+    async getTagUstensils() {
+        let recipes = await this.get()
+        let ustensils = []
+        recipes.map(e => {
+            e.ustensils.map(ustensil => {
+                ustensils.push(ustensil)
+            })
+
+        })
+        let uniqueUstensils = [...new Set(ustensils)]
+        return uniqueUstensils
+    }
+    // async searchByTagIngredients(tagSelected){
+    //     let recipes = await this.get()
+    //     let recipesSearch = recipes.filter(ingredient => )
+    //     return recipesSearch
+    // }
 }
 
 //Récupère les tableaux des ingrédients, ustensile et appareils

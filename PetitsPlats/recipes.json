@@ -66,7 +66,7 @@
                     "quantity": 5
                 },
                 {
-                    "ingredient": "Lait de Coco",
+                    "ingredient": "Lait de coco",
                     "quantity": 100,
                     "unit": "ml"
                 }
@@ -230,7 +230,7 @@
                     "unit": "cl"
                 },
                 {
-                    "ingredient": "Sucre en Poudre",
+                    "ingredient": "Sucre en poudre",
                     "quantity": 100,
                     "unit": "grammes"
                 },
@@ -313,12 +313,12 @@
                     "quantity": 2
                 },
                 {
-                    "ingredient": "Sucre en Poudre",
+                    "ingredient": "Sucre en poudre",
                     "quantity": "110",
                     "unit": "grammes"
                 },
                 {
-                    "ingredient": "farine",
+                    "ingredient": "Farine",
                     "quantity": 90,
                     "unit": "grammes"
                 }
@@ -429,7 +429,7 @@
                     "unit": "tranches"
                 },
                 {
-                    "ingredient": "Pommes",
+                    "ingredient": "Pomme",
                     "quantity": 1
                 },
                 {
@@ -462,7 +462,7 @@
                     "unit": "grammes"
                 },
                 {
-                    "ingredient": "Pommes",
+                    "ingredient": "Pomme",
                     "quantity": 8
                 },
                 {
@@ -510,7 +510,7 @@
                     "unit": "cuillère à soupe"
                 },
                 {
-                    "ingredient": "huile d'olive",
+                    "ingredient": "Huile d'olive",
                     "quantity": 2,
                     "unit": "cuillère à soupe"
                 }
@@ -637,7 +637,7 @@
                     "unit": "tiges"
                 },
                 {
-                    "ingredient": "huile d'olives",
+                    "ingredient": "Huile d'olive",
                     "quantity": 2,
                     "unit": "cuillère à soupe"
                 }
@@ -906,7 +906,7 @@
                     "quantity": 3
                 },
                 {
-                    "ingredient": "Crème Fraîche",
+                    "ingredient": "Crème fraîche",
                     "quantity": 20,
                     "unit": "cl"
                 },
@@ -1023,7 +1023,7 @@
                     "quantity": 1
                 },
                 {
-                    "ingredient": "Huile d'olives"
+                    "ingredient": "Huile d'olive"
                 },
                 {
                     "ingredient": "Oignon",
@@ -1444,7 +1444,7 @@
                     "unit": "grammes"
                 },
                 {
-                    "ingredient": "Huile d'olives",
+                    "ingredient": "Huile d'olive",
                     "quantity": 25,
                     "unit": "cl"
                 },
@@ -1453,7 +1453,7 @@
                     "quantity": 1
                 },
                 {
-                    "ingredient": "Coulis de tomates",
+                    "ingredient": "Coulis de tomate",
                     "quantity": 20,
                     "unit": "cl"
                 },
@@ -1704,7 +1704,7 @@
                     "unit": "grammes"
                 },
                 {
-                    "ingredient": "farine",
+                    "ingredient": "Farine",
                     "quantity": 40,
                     "unit": "grammes"
                 }
@@ -1817,7 +1817,7 @@
                     "unit": "grammes"
                 },
                 {
-                    "ingredient": "Crème Fraîche",
+                    "ingredient": "Crème fraîche",
                     "quantity": 20,
                     "unit": "cl"
                 }
@@ -1878,11 +1878,11 @@
             "servings": 4,
             "ingredients": [
                 {
-                    "ingredient": "Bananes",
+                    "ingredient": "Banane",
                     "quantity": 2
                 },
                 {
-                    "ingredient": "Kiwis",
+                    "ingredient": "Kiwi",
                     "quantity": 3
                 },
                 {
