@@ -106,6 +106,18 @@ class App {
         this.$selects = document.querySelector(".selects")
         // Insérer le select après le header
         this.recipeApi = new RecipeApi('/PetitsPlats/recipes.json')
+        //Créer un tableau dans lequel il y aura les tags 
+        this.tabOfTags = [];
+        console.log(this.tabOfTags)
+
+    }
+    onNewTagAdded(text, type) {
+        this.tabOfTags.push({ type, text })
+
+    }
+    onTagDeleted(textTagClose) {
+
+        this.tabOfTags.filter((tagClose) => tagClose.text != textTagClose)
 
     }
     async main() {
@@ -114,94 +126,124 @@ class App {
             const card = new recipeCard(recipe)
             this.$recipesContainer.appendChild(card.CreateRecipeCard())
         })
-        console.log(recipesData)
+        // console.log(recipesData)
         //Créer un tableau de tout les ingrédients
         let recupTagListsIngredients = await this.recipeApi.getTagIngredients(recipesData)
         // Pour chaque ingrédients, créer un élément li dans lequel il y a un ingrédient 
         let selectTagIngredients = new Select(recupTagListsIngredients, "ingredients")
 
-        this.$selects.appendChild(selectTagIngredients.createSelectBox())
+        this.$selects.appendChild(selectTagIngredients.createSelectBox(this.onNewTagAdded, this.onTagDeleted))
+
+        // Dans le select pattern
+
         // Lorsque l'utilisateur clique sur un tag des ingrédients, on récupère un tableau avec les tag selectionnés.
-        let tagInList = document.querySelectorAll(".select-box-ingredients li")
-        tagInList.forEach(elem => {
-            elem.addEventListener("click", e => {
-                let tagsSelect = selectTagIngredients._tagSelected
-                console.log(tagsSelect)
-                // Quand l'utilisateur clique sur un tag dans la liste, on effectue une recherche dans les recettes suivant les données du tableau des tag sélectionné
+        // let tagInList = document.querySelectorAll(".select-box-ingredients li")
+        // tagInList.forEach(elem => {
+        //     elem.addEventListener("click", e => {
+        //         let tagsSelect = selectTagIngredients._tagSelected
+        //         // console.log(tagsSelect)
+        //         // console.log(tagInList)
+        //         // Quand l'utilisateur clique sur un tag dans la liste, on effectue une recherche dans les recettes suivant les données du tableau des tag sélectionné
 
-                // Pour le trie des recettes selon les tags: on vérifie si le tableau tagSelect contient un des ingredients contenu dans le tableau ingredients d'une des recettes.
-                // Si il y en à un la méthode some renvoie true et créer un nouveau tableau avec la méthode filter.
-                let recipesTrie = recipesData.filter(recipe =>
-                    recipe.ingredients.some(ingredient => tagsSelect.includes(ingredient.ingredient))
-                )
-                console.log(recipesTrie)
-                this.$recipesContainer.innerHTML = ""
-                recipesTrie.map(recipe => new Recipe(recipe)).forEach(recipe => {
-                    const card = new recipeCard(recipe)
-                    this.$recipesContainer.appendChild(card.CreateRecipeCard())
-                })
-                // Lier l'affichage des tags restant au recettes qui s'affichent
-                recupTagListsIngredients = this.recipeApi.getTagIngredients(recipesTrie).then((sort) => {
-                    // Les tags qui sont dans les recettes qui s'affichent = sort
-                    console.log(sort)
-                    let tagIngredient = document.querySelector(".select-box-ingredients")
-                    tagIngredient.innerHTML = ""
-                    let newselectTagIngredients = new Select(sort, "ingredients")
-                    // et on affiche les recettes qui correspondent dans le DOM.
-                    this.$selects.insertAdjacentElement("afterbegin", newselectTagIngredients.createSelectBox())
-                })
+        //         // Pour le trie des recettes selon les tags: on vérifie si le tableau tagSelect contient un des ingredients contenu dans le tableau ingredients d'une des recettes.
+        //         // Si il y en à un la méthode some renvoie true et créer un nouveau tableau avec la méthode filter.
+        //         let recipesTrie = recipesData.filter(recipe =>
+        //             recipe.ingredients.some(ingredient => tagsSelect.includes(ingredient.ingredient))
+        //         )
+        //         console.log(recipesTrie)
+        //         this.$recipesContainer.innerHTML = ""
+        //         recipesTrie.map(recipe => new Recipe(recipe)).forEach(recipe => {
+        //             const card = new recipeCard(recipe)
+        //             this.$recipesContainer.appendChild(card.CreateRecipeCard())
+        //         })
+        //         // Lier l'affichage des tags restant au recettes qui s'affichent
+        //         recupTagListsIngredients = this.recipeApi
+        //             .getTagIngredients(recipesTrie)
+        //             .then((sortIngredients) => {
+        //                 // Les tags qui sont dans les recettes qui s'affichent = sort
+        //                 console.log(sortIngredients)
+        //                 let tagIngredient = document.querySelector(".select-box-ingredients")
+        //                 tagIngredient.innerHTML = ""
+        //                 let newselectTagIngredients = new Select(sortIngredients, "ingredients", tagsSelect)
+        //                 // et on affiche les recettes qui correspondent dans le DOM.
+        //                 this.$selects.insertAdjacentElement("afterbegin", newselectTagIngredients.createSelectBox(this.onNewTagAdded))
+        //                 tagInList = document.querySelectorAll(".select-box-ingredients li")
+        //                 tagInList.forEach(tag => {
+        //                     tag.addEventListener("click", tagElement => {
+        //                         tagsSelect = selectTagIngredients._tagSelected.concat(newselectTagIngredients._tagSelected)
+        //                         console.log(tagsSelect)
+        //                         console.log(tagInList)
+        //                         // Quand l'utilisateur clique sur un tag dans la liste, on effectue une recherche dans les recettes suivant les données du tableau des tag sélectionné
 
-                //Lorsque les tag s'affiche dans le dom, on a la possibilité de les fermer en cliquant sur la crois .closeTag
-                let closeTag = document.querySelectorAll(".closeTag")
-                closeTag.forEach(close => {
-                    // Lorsqu'on clique sur la croix, le tableau des tags est actualisé.
-                    close.addEventListener("click", e => {
-                        let tagsSelect = selectTagIngredients._tagSelected
-                        console.log(tagsSelect)
-                        recipesTrie = recipesTrie.filter(recipe => recipe.ingredients.some(ingredient => tagsSelect.includes(ingredient.ingredient)))
-                        console.log(recipesTrie)
-                        this.$recipesContainer.innerHTML = ""
-                        recipesTrie.map(recipe => new Recipe(recipe)).forEach(recipe => {
-                            const card = new recipeCard(recipe)
-                            this.$recipesContainer.appendChild(card.CreateRecipeCard())
-                            // // Lier l'affichage des tags restant au recettes qui s'affichent
-                            // recupTagListsIngredients = this.recipeApi.getTagIngredients(recipesTrie)
-                            // console.log(recupTagListsIngredients)
-                            // selectTagIngredients = new Select(recupTagListsIngredients, "ingredients")
-                            // this.$selects.innerHTML = ""
-                            // this.$selects.appendChild(selectTagIngredients.createSelectBox())
-                        })
-                        //Si aucun tag alors afficher toutes les recettes
-                        if (tagsSelect.length === 0) {
-                            recipesData.map(recipe => new Recipe(recipe)).forEach(recipe => {
-                                const card = new recipeCard(recipe)
-                                this.$recipesContainer.appendChild(card.CreateRecipeCard())
-                                // Si aucun tag afficher tout les tags
+        //                         // Pour le trie des recettes selon les tags: on vérifie si le tableau tagSelect contient un des ingredients contenu dans le tableau ingredients d'une des recettes.
+        //                         // Si il y en à un la méthode some renvoie true et créer un nouveau tableau avec la méthode filter.
+        //                         recipesTrie = recipesData.filter(recipe =>
+        //                             recipe.ingredients.some(ingredient => tagsSelect.includes(ingredient.ingredient))
+        //                         )
+        //                         console.log(recipesTrie)
+        //                         this.$recipesContainer.innerHTML = ""
+        //                         recipesTrie.map(recipe => new Recipe(recipe)).forEach(recipe => {
+        //                             const card = new recipeCard(recipe)
+        //                             this.$recipesContainer.appendChild(card.CreateRecipeCard())
+        //                         })
+        //                     })
+        //                 })
+        //             })
 
-                                let tagIngredient = document.querySelector(".select-box-ingredients")
-                                tagIngredient.innerHTML = ""
-                                this.$selects.insertAdjacentElement("afterbegin", selectTagIngredients.createSelectBox())
-                            })
-                        }
-                    })
-                })
+        //         //Lorsque les tag s'affiche dans le dom, on a la possibilité de les fermer en cliquant sur la crois .closeTag
+        //         let closeTag = document.querySelectorAll(".closeTag")
+        //         closeTag.forEach(close => {
+        //             // Lorsqu'on clique sur la croix, le tableau des tags est actualisé.
+        //             close.addEventListener("click", e => {
+        //                 let tagsSelect = selectTagIngredients._tagSelected
+        //                 console.log(tagsSelect)
+        //                 recipesTrie = recipesTrie.filter(recipe => recipe.ingredients.some(ingredient => tagsSelect.includes(ingredient.ingredient)))
+        //                 console.log(recipesTrie)
+        //                 this.$recipesContainer.innerHTML = ""
+        //                 recipesTrie.map(recipe => new Recipe(recipe)).forEach(recipe => {
+        //                     const card = new recipeCard(recipe)
+        //                     this.$recipesContainer.appendChild(card.CreateRecipeCard())
 
-            })
-        })
+        //                     // // Lier l'affichage des tags restant au recettes qui s'affichent
+        //                     // recupTagListsIngredients = this.recipeApi.getTagIngredients(recipesTrie)
+        //                     // console.log(recupTagListsIngredients)
+        //                     // selectTagIngredients = new Select(recupTagListsIngredients, "ingredients")
+        //                     // this.$selects.innerHTML = ""
+        //                     // this.$selects.appendChild(selectTagIngredients.createSelectBox())
+        //                 })
+        //                 //Si aucun tag alors afficher toutes les recettes
+        //                 if (tagsSelect.length === 0) {
+        //                     recipesData.map(recipe => new Recipe(recipe)).forEach(recipe => {
+        //                         const card = new recipeCard(recipe)
+        //                         this.$recipesContainer.appendChild(card.CreateRecipeCard())
+        //                         // Si aucun tag afficher tout les tags
 
+        //                         let tagIngredient = document.querySelector(".select-box-ingredients")
+        //                         tagIngredient.innerHTML = ""
+        //                         this.$selects.insertAdjacentElement("afterbegin", selectTagIngredients.createSelectBox())
+        //                         tagInList = document.querySelectorAll(".select-box-ingredients li")
+        //                     })
+        //                 }
+        //             })
+        //         })
 
+        //     })
+        // })
+
+        // Dans le select pattern
         let recupTagUstensils = await this.recipeApi.getTagUstensils()
         const selectTagUstensils = new Select(recupTagUstensils, "ustensils")
-        this.$selects.appendChild(selectTagUstensils.createSelectBox())
+        this.$selects.appendChild(selectTagUstensils.createSelectBox(this.onNewTagAdded))
 
         let recupTagAppliance = await this.recipeApi.getTagAppliance()
         const selectTagAppliance = new Select(recupTagAppliance, "appliance")
-        this.$selects.appendChild(selectTagAppliance.createSelectBox())
+        this.$selects.appendChild(selectTagAppliance.createSelectBox(this.onNewTagAdded))
 
 
         //la barre de recherche et le dropdown
 
-        let allTags = recupTagListsIngredients.concat(recupTagUstensils, recupTagAppliance)
+        // this.tags = recupTagListsIngredients.concat(recupTagUstensils, recupTagAppliance)
+        // console.log(this.tags)
 
 
         //la barre de recherche et le dropdown

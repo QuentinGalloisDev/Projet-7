@@ -12,7 +12,7 @@ class Select {
     //     console.log(tableau)
     //     return tableau
     // }
-    createSelectBox() {
+    createSelectBox(handleTagCliked, tagDeleted) {
 
         const selectBox = document.querySelector(`.select-box-${this._class}`)
         // selectBox.setAttribute("class", `select-box`)
@@ -48,23 +48,26 @@ class Select {
             selectBox.classList.toggle('active')
         })
 
-        let tab = []
+        // let tabOfTags = []
+
 
         // au clic sur une option on prend la valeur du texte cliqué qu'on stocke qu'on stocke dans text
         optionsList.forEach((optionsListStringLe) => {
             optionsListStringLe.addEventListener("click", (e) => {
                 let text = optionsListStringLe.innerHTML;
                 soValue.value = text
-                // tagSelectedByUser(text)
+                handleTagCliked(text, this._class)
+
                 // On utilise une fonction de rappel pour récupérer les tags.
-                tab.push(text)
-                this._tagSelected = tab
+                // tabOfTags.push(text)
+                // this._tagSelected = tab
+
 
                 // Au clique sur un élément on place l'élément cliqué en dessous de la barre de recherche 
                 // optionsListStringLe.remove()
                 optionsListStringLe.style.display = "none"
 
-                optionsList = document.querySelectorAll(".options li")
+                optionsList = document.querySelectorAll(`.select-box-${this._class} .options li`)
                 // console.log(optionsList)
                 // console.log(optionsListStringLe)
 
@@ -101,8 +104,11 @@ class Select {
 
                         // Exemple justTag = sauce
                         // supprime l'élément tag du tableau
-                        tab = tab.filter((word) => word !== justTag)
-                        this._tagSelected = tab
+                        // tab = tab.filter((word) => word !== justTag)
+                        // this._tagSelected = tab
+                        tagDeleted(justTag)
+
+
                         //Supprime l'élément dans la liste qui correspond au tag que l'utilisateur souhaite supprimer
                         let tagSelectedSearch = document.querySelectorAll(".search .tagSelected")
                         // console.log(tagSelectedSearch)
