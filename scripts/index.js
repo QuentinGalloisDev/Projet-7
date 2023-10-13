@@ -108,17 +108,19 @@ class App {
         this.recipeApi = new RecipeApi('/PetitsPlats/recipes.json')
         //Créer un tableau dans lequel il y aura les tags 
         this.tabOfTags = [];
-        console.log(this.tabOfTags)
+        // console.log(this.tabOfTags)
 
     }
-    onNewTagAdded(text, type) {
-        this.tabOfTags.push({ type, text })
+    onNewTagAdded(text) {
+        this.tabOfTags.push(text)
+        console.log(this.tabOfTags)
+        return new Search('/PetitsPlats/recipes.json', this.tabOfTags).search()
 
     }
     onTagDeleted(textTagClose) {
-
-        this.tabOfTags.filter((tagClose) => tagClose.text != textTagClose)
-
+        this.tabOfTags = this.tabOfTags.filter((tagClose) => tagClose != textTagClose)
+        console.log(this.tabOfTags)
+        return new Search('/PetitsPlats/recipes.json', this.tabOfTags).search()
     }
     async main() {
         const recipesData = await this.recipeApi.getRecipes()
@@ -132,7 +134,18 @@ class App {
         // Pour chaque ingrédients, créer un élément li dans lequel il y a un ingrédient 
         let selectTagIngredients = new Select(recupTagListsIngredients, "ingredients")
 
-        this.$selects.appendChild(selectTagIngredients.createSelectBox(this.onNewTagAdded, this.onTagDeleted))
+        //  La fonction onNewTagAdded étant appelé dans le selectPattern, la portée est réduite et on perd le this.
+        // On bind le this à l'éxécution de la fonction pour pouvoir le réutilisé.
+        // Une autre solution serait de faire une fonction fléchée qui exécute la fonction que l'on souhaite:
+        // (text, type)=> this.onNewTagAdded(text,type)
+        this.$selects.appendChild(selectTagIngredients.createSelectBox(
+            this.onNewTagAdded.bind(this),
+            this.onTagDeleted.bind(this)))
+
+
+
+
+
 
         // Dans le select pattern
 
@@ -233,20 +246,71 @@ class App {
         // Dans le select pattern
         let recupTagUstensils = await this.recipeApi.getTagUstensils()
         const selectTagUstensils = new Select(recupTagUstensils, "ustensils")
-        this.$selects.appendChild(selectTagUstensils.createSelectBox(this.onNewTagAdded))
+        this.$selects.appendChild(selectTagUstensils.createSelectBox(this.onNewTagAdded.bind(this),
+            this.onTagDeleted.bind(this)))
 
         let recupTagAppliance = await this.recipeApi.getTagAppliance()
         const selectTagAppliance = new Select(recupTagAppliance, "appliance")
-        this.$selects.appendChild(selectTagAppliance.createSelectBox(this.onNewTagAdded))
+        this.$selects.appendChild(selectTagAppliance.createSelectBox(this.onNewTagAdded.bind(this),
+            this.onTagDeleted.bind(this)))
+
+        // Barre de recherche
+
+        function dropResult() {
+            document.querySelector(".dropdown-content").classList.toggle("show");
+        }
+        function hideResult() {
+            document.querySelector(".dropdown-content").classList.remove("show");
+        }
+
+        // On récupère un tableau de tout les tags 
+        let allTags = recupTagListsIngredients.concat(recupTagUstensils, recupTagAppliance)
+
+        let inputSearch = document.querySelector("#myInput")
+        inputSearch.addEventListener("keyup", (event) => {
+            event.preventDefault()
+            let valid = document.querySelector("#myInput").checkValidity();
 
 
-        //la barre de recherche et le dropdown
+            if (valid === true) {
+                //Renvoie le contenu du champ
+                console.log(event.target.value)
+                dropResult()
+                inputSearch.style = "border-radius: 12px 12px 0px 0px;"
+
+                //Si le pattern est valide on faite une recherche des tags qui correspondent au texte entrée par l'utilisateur dans le tableau allTags.
+                let userInput = event.target.value
+                // On créer une regex avec l'userInput pour rechercher ce qui match dans le tableau allTags
+                let regexSearch = new RegExp('(?:' + userInput + ')')
+                let tagsSearch = allTags.filter(tag => regexSearch.test(tag))
+                console.log(tagsSearch)
+                // Entrer les résultat dans le dom
+                let dropdownContent = document.querySelector(".dropdown-content")
+                tagsSearch.map(tag => {
+                    dropdownContent.insertAdjacentHTML("afterbegin", `<li>${tag}</li>`)
+                })
+            }
+
+            else {
+                hideResult()
+            }
+            //Si l'utilisateur clique ailleurs, fermer le dropdown
+            window.addEventListener("click", e => {
+                hideResult()
+            })
+
+        })
+
+
+
+        // Barre de recherche
+
 
         // this.tags = recupTagListsIngredients.concat(recupTagUstensils, recupTagAppliance)
         // console.log(this.tags)
 
 
-        //la barre de recherche et le dropdown
+
     }
 }
 const app = new App()

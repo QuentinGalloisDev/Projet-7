@@ -15,12 +15,11 @@ class RecipeApi extends Api {
         super(url)
     }
     async getRecipes() {
-        // console.log(await this.get())
+
         return await this.get()
     }
     async getTagIngredients(recipes) {
         // Créer un tableau avec tout les ingrédients
-        // let recipes = await this.get()
         let ingredients = []
         recipes.map(e => {
             e.ingredients.map(element => {
