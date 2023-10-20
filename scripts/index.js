@@ -108,26 +108,41 @@ class App {
         this.recipeApi = new RecipeApi('/PetitsPlats/recipes.json')
         //Créer un tableau dans lequel il y aura les tags 
         this.tabOfTags = [];
+        this.searchInputText = "";
         // console.log(this.tabOfTags)
 
     }
-    onNewTagAdded(text) {
-        this.tabOfTags.push(text)
+    onNewTagAdded(text, type) {
+        this.tabOfTags.push({ text, type })
         console.log(this.tabOfTags)
-        return new Search('/PetitsPlats/recipes.json', this.tabOfTags).search()
+        return new Search('/PetitsPlats/recipes.json', this.tabOfTags).searchByTags()
+        // const results = new Search('/PetitsPlats/recipes.json', this.tabOfTags).search()
+        // Relancer l'affichage selon results
 
     }
     onTagDeleted(textTagClose) {
-        this.tabOfTags = this.tabOfTags.filter((tagClose) => tagClose != textTagClose)
+        this.tabOfTags = this.tabOfTags.filter((tagClose) => tagClose.text != textTagClose)
         console.log(this.tabOfTags)
-        return new Search('/PetitsPlats/recipes.json', this.tabOfTags).search()
+        return new Search('/PetitsPlats/recipes.json', this.tabOfTags).searchByTags()
+        // const results = new Search('/PetitsPlats/recipes.json', this.tabOfTags).search()
+        // Relancer l'affichage selon results
+
     }
-    async main() {
-        const recipesData = await this.recipeApi.getRecipes()
-        recipesData.map(recipe => new Recipe(recipe)).forEach(recipe => {
+
+    affichageDesRecettes(recipesToShow) {
+        recipesToShow.map(recipe => new Recipe(recipe)).forEach(recipe => {
             const card = new recipeCard(recipe)
             this.$recipesContainer.appendChild(card.CreateRecipeCard())
         })
+    }
+
+    async main() {
+        const recipesData = await this.recipeApi.getRecipes()
+        // recipesData.map(recipe => new Recipe(recipe)).forEach(recipe => {
+        //     const card = new recipeCard(recipe)
+        //     this.$recipesContainer.appendChild(card.CreateRecipeCard())
+        // })
+        this.affichageDesRecettes(recipesData)
         // console.log(recipesData)
         //Créer un tableau de tout les ingrédients
         let recupTagListsIngredients = await this.recipeApi.getTagIngredients(recipesData)
@@ -264,13 +279,13 @@ class App {
         }
 
         // On récupère un tableau de tout les tags 
-        let allTags = recupTagListsIngredients.concat(recupTagUstensils, recupTagAppliance)
+        // let allTags = recupTagListsIngredients.concat(recupTagUstensils, recupTagAppliance)
 
-        let inputSearch = document.querySelector("#myInput")
+        let inputSearch = document.querySelector("#inputForTextualSearch")
         inputSearch.addEventListener("keyup", (event) => {
             event.preventDefault()
-            let valid = document.querySelector("#myInput").checkValidity();
-
+            // valid renvoie true si le pattern de la barre de recherche est valide.
+            let valid = document.querySelector("#inputForTextualSearch").checkValidity();
 
             if (valid === true) {
                 //Renvoie le contenu du champ
@@ -279,16 +294,23 @@ class App {
                 inputSearch.style = "border-radius: 12px 12px 0px 0px;"
 
                 //Si le pattern est valide on faite une recherche des tags qui correspondent au texte entrée par l'utilisateur dans le tableau allTags.
-                let userInput = event.target.value
-                // On créer une regex avec l'userInput pour rechercher ce qui match dans le tableau allTags
+                let userInput = event.target.value.toLowerCase()
+                // On créer une regex avec l'userInput pour rechercher ce qui correspond dans le tableau allTags
                 let regexSearch = new RegExp('(?:' + userInput + ')')
-                let tagsSearch = allTags.filter(tag => regexSearch.test(tag))
-                console.log(tagsSearch)
+                this.searchInputText = regexSearch
+                // let tagsSearch = allTags.filter(tag => regexSearch.test(tag))
+                // console.log(tagsSearch)
+                // On supprime les doublons en cas de recherche similaire répétée
+
                 // Entrer les résultat dans le dom
-                let dropdownContent = document.querySelector(".dropdown-content")
-                tagsSearch.map(tag => {
-                    dropdownContent.insertAdjacentHTML("afterbegin", `<li>${tag}</li>`)
-                })
+                // let dropdownContent = document.querySelector(".dropdown-content")
+                // tagsSearch.map(tag => {
+
+                //     dropdownContent.insertAdjacentHTML("afterbegin", `<li>${tag}</li>`)
+                // })
+                let recipeToShow = new Search('/PetitsPlats/recipes.json', this.tabOfTags, this.searchInputText).searchByText()
+                console.log(this.searchInputText)
+                // this.affichageDesRecettes(recipesData)
             }
 
             else {

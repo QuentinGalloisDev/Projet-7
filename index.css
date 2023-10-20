@@ -280,7 +280,7 @@ header #myDropdown {
 }
 
 /* The search field */
-#myInput {
+#inputForTextualSearch {
 
     height: 70px;
     width: 60%;

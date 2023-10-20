@@ -56,7 +56,7 @@ class Select {
             optionsListStringLe.addEventListener("click", (e) => {
                 let text = optionsListStringLe.innerHTML;
                 soValue.value = text
-                handleTagCliked(text)
+                handleTagCliked(text, this._class)
 
                 // On utilise une fonction de rappel pour récupérer les tags.
                 // tabOfTags.push(text)
