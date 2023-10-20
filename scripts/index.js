@@ -110,6 +110,7 @@ class App {
         this.tabOfTags = [];
         this.searchInputText = "";
         // console.log(this.tabOfTags)
+        this.searchingByText = new Search('/PetitsPlats/recipes.json', this.tabOfTags, this.searchInputText)
 
     }
     onNewTagAdded(text, type) {
@@ -129,7 +130,7 @@ class App {
 
     }
 
-    affichageDesRecettes(recipesToShow) {
+    displayRecipes(recipesToShow) {
         recipesToShow.map(recipe => new Recipe(recipe)).forEach(recipe => {
             const card = new recipeCard(recipe)
             this.$recipesContainer.appendChild(card.CreateRecipeCard())
@@ -142,7 +143,8 @@ class App {
         //     const card = new recipeCard(recipe)
         //     this.$recipesContainer.appendChild(card.CreateRecipeCard())
         // })
-        this.affichageDesRecettes(recipesData)
+        this.displayRecipes(recipesData)
+        console.log(recipesData)
         // console.log(recipesData)
         //Créer un tableau de tout les ingrédients
         let recupTagListsIngredients = await this.recipeApi.getTagIngredients(recipesData)
@@ -308,8 +310,17 @@ class App {
 
                 //     dropdownContent.insertAdjacentHTML("afterbegin", `<li>${tag}</li>`)
                 // })
-                let recipeToShow = new Search('/PetitsPlats/recipes.json', this.tabOfTags, this.searchInputText).searchByText()
+                let recipeToShowFilteredByText = new Search('/PetitsPlats/recipes.json', this.tabOfTags, this.searchInputText)
                 console.log(this.searchInputText)
+                console.log(recipeToShowFilteredByText.searchByText())
+                let recipeFilteredByText = ""
+                recipeToShowFilteredByText.searchByText().then((recipe) => {
+                    recipeFilteredByText = recipe
+                    console.log(recipeFilteredByText)
+                    this.$recipesContainer.innerHTML = ""
+                    this.displayRecipes(recipeFilteredByText)
+                })
+
                 // this.affichageDesRecettes(recipesData)
             }
 

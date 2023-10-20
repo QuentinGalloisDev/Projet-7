@@ -79,5 +79,6 @@ class Search extends Api {
         });
 
         console.log(recipesFilteredByText)
+        return recipesFilteredByText
     }
 }
