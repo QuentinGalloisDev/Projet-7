@@ -32,8 +32,8 @@ class RecipeApi extends Api {
         let uniqueIngredient = [...new Set(ingredients)]
         return uniqueIngredient
     }
-    async getTagAppliance() {
-        let recipes = await this.get()
+    async getTagAppliance(recipes) {
+        // let recipes = await this.get()
         let appliances = []
         recipes.map(e => {
             appliances.push(e.appliance)
@@ -41,8 +41,8 @@ class RecipeApi extends Api {
         let uniqueAppliance = [...new Set(appliances)]
         return uniqueAppliance
     }
-    async getTagUstensils() {
-        let recipes = await this.get()
+    async getTagUstensils(recipes) {
+        // let recipes = await this.get()
         let ustensils = []
         recipes.map(e => {
             e.ustensils.map(ustensil => {

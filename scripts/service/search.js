@@ -46,6 +46,7 @@ class Search extends Api {
             return isRecipeValid
         })
         console.log(recipesFilteredByTags)
+        return recipesFilteredByTags
 
         // Recherche textuelle
 

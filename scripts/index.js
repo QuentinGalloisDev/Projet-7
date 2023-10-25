@@ -111,12 +111,16 @@ class App {
         this.searchInputText = "";
         // console.log(this.tabOfTags)
         this.searchingByText = new Search('/PetitsPlats/recipes.json', this.tabOfTags, this.searchInputText)
-
     }
     onNewTagAdded(text, type) {
         this.tabOfTags.push({ text, type })
         console.log(this.tabOfTags)
-        return new Search('/PetitsPlats/recipes.json', this.tabOfTags).searchByTags()
+        let results = new Search('/PetitsPlats/recipes.json', this.tabOfTags).searchByTags().then((result) => {
+            results = result
+            console.log(results)
+            this.$recipesContainer.innerHTML = ""
+            this.displayRecipes(results)
+        })
         // const results = new Search('/PetitsPlats/recipes.json', this.tabOfTags).search()
         // Relancer l'affichage selon results
 
@@ -124,10 +128,12 @@ class App {
     onTagDeleted(textTagClose) {
         this.tabOfTags = this.tabOfTags.filter((tagClose) => tagClose.text != textTagClose)
         console.log(this.tabOfTags)
-        return new Search('/PetitsPlats/recipes.json', this.tabOfTags).searchByTags()
-        // const results = new Search('/PetitsPlats/recipes.json', this.tabOfTags).search()
-        // Relancer l'affichage selon results
-
+        let results = new Search('/PetitsPlats/recipes.json', this.tabOfTags).searchByTags().then((result) => {
+            results = result
+            console.log(results)
+            this.$recipesContainer.innerHTML = ""
+            this.displayRecipes(results)
+        })
     }
 
     displayRecipes(recipesToShow) {
@@ -144,12 +150,12 @@ class App {
         //     this.$recipesContainer.appendChild(card.CreateRecipeCard())
         // })
         this.displayRecipes(recipesData)
-        console.log(recipesData)
         // console.log(recipesData)
         //Créer un tableau de tout les ingrédients
         let recupTagListsIngredients = await this.recipeApi.getTagIngredients(recipesData)
         // Pour chaque ingrédients, créer un élément li dans lequel il y a un ingrédient 
         let selectTagIngredients = new Select(recupTagListsIngredients, "ingredients")
+        // console.log(selectTagIngredients._tags)
 
         //  La fonction onNewTagAdded étant appelé dans le selectPattern, la portée est réduite et on perd le this.
         // On bind le this à l'éxécution de la fonction pour pouvoir le réutilisé.
@@ -158,10 +164,6 @@ class App {
         this.$selects.appendChild(selectTagIngredients.createSelectBox(
             this.onNewTagAdded.bind(this),
             this.onTagDeleted.bind(this)))
-
-
-
-
 
 
         // Dans le select pattern
@@ -261,24 +263,24 @@ class App {
         // })
 
         // Dans le select pattern
-        let recupTagUstensils = await this.recipeApi.getTagUstensils()
+        let recupTagUstensils = await this.recipeApi.getTagUstensils(recipesData)
         const selectTagUstensils = new Select(recupTagUstensils, "ustensils")
         this.$selects.appendChild(selectTagUstensils.createSelectBox(this.onNewTagAdded.bind(this),
             this.onTagDeleted.bind(this)))
 
-        let recupTagAppliance = await this.recipeApi.getTagAppliance()
+        let recupTagAppliance = await this.recipeApi.getTagAppliance(recipesData)
         const selectTagAppliance = new Select(recupTagAppliance, "appliance")
         this.$selects.appendChild(selectTagAppliance.createSelectBox(this.onNewTagAdded.bind(this),
             this.onTagDeleted.bind(this)))
 
         // Barre de recherche
 
-        function dropResult() {
-            document.querySelector(".dropdown-content").classList.toggle("show");
-        }
-        function hideResult() {
-            document.querySelector(".dropdown-content").classList.remove("show");
-        }
+        // function dropResult() {
+        //     document.querySelector(".dropdown-content").classList.toggle("show");
+        // }
+        // function hideResult() {
+        //     document.querySelector(".dropdown-content").classList.remove("show");
+        // }
 
         // On récupère un tableau de tout les tags 
         // let allTags = recupTagListsIngredients.concat(recupTagUstensils, recupTagAppliance)
@@ -292,7 +294,7 @@ class App {
             if (valid === true) {
                 //Renvoie le contenu du champ
                 console.log(event.target.value)
-                dropResult()
+                // dropResult()
                 inputSearch.style = "border-radius: 12px 12px 0px 0px;"
 
                 //Si le pattern est valide on faite une recherche des tags qui correspondent au texte entrée par l'utilisateur dans le tableau allTags.
@@ -319,17 +321,58 @@ class App {
                     console.log(recipeFilteredByText)
                     this.$recipesContainer.innerHTML = ""
                     this.displayRecipes(recipeFilteredByText)
+
+                    //  On efface les selecttags et on en remet avec les nouvelles données.
+
+                    // Select ingredients
+                    //Créer un tableau de tout les ingrédients
+                    recupTagListsIngredients = this.recipeApi.getTagIngredients(recipeFilteredByText).then((tagsIngredient) => {
+                        recupTagListsIngredients = tagsIngredient
+                        console.log(recupTagListsIngredients)
+                        let selectBoxIngredients = document.querySelector(".select-box-ingredients")
+                        selectBoxIngredients.innerHTML = ""
+
+                        let selectTagIngredients = new Select(recupTagListsIngredients, "ingredients")
+                        //Fonctionne mais le selectTags se déplace à la fin des tags sans doute a cause du insertadjacenthtml afterbegin.
+                        this.$selects.appendChild(selectTagIngredients.createSelectBox(
+                            this.onNewTagAdded.bind(this),
+                            this.onTagDeleted.bind(this)))
+                    })
+                    //Select ustensils
+                    recupTagUstensils = this.recipeApi.getTagUstensils(recipeFilteredByText).then((tagUstensils) => {
+                        recupTagUstensils = tagUstensils
+                        console.log(recupTagUstensils)
+                        let selectBoxUstensils = document.querySelector(".select-box-ustensils")
+                        selectBoxUstensils.innerHTML = ""
+
+                        let selectTagUstensils = new Select(recupTagUstensils, "ustensils")
+                        this.$selects.appendChild(selectTagUstensils.createSelectBox(this.onNewTagAdded.bind(this),
+                            this.onTagDeleted.bind(this)))
+                    })
+                    //Select Appliance
+                    recupTagAppliance = this.recipeApi.getTagAppliance(recipeFilteredByText).then((tagAppliance) => {
+                        recupTagAppliance = tagAppliance
+                        console.log(recupTagAppliance)
+                        let selectBoxAppliance = document.querySelector(".select-box-appliance")
+                        selectBoxAppliance.innerHTML = ""
+
+                        let selectTagAppliance = new Select(recupTagAppliance, "appliance")
+                        this.$selects.appendChild(selectTagAppliance.createSelectBox(this.onNewTagAdded.bind(this),
+                            this.onTagDeleted.bind(this)))
+                    })
                 })
+
+
 
                 // this.affichageDesRecettes(recipesData)
             }
 
             else {
-                hideResult()
+                // hideResult()
             }
             //Si l'utilisateur clique ailleurs, fermer le dropdown
             window.addEventListener("click", e => {
-                hideResult()
+                // hideResult()
             })
 
         })
