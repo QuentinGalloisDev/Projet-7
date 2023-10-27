@@ -1,16 +1,17 @@
 class Search extends Api {
-    constructor(url, tags, textSearch) {
+    constructor(url, tags, textSearch, recipes) {
         super(url)
         this.tags = tags;
         this.textSearch = textSearch
-
+        this.recipes = recipes
     }
     async getRecipes() {
 
         return await this.get()
     }
-    async searchByTags() {
-        let recipes = await this.get()
+    async searchByTags(recipes) {
+        // let recipes = await this.get()
+        recipes = this.recipes
 
         const recipesFilteredByTags = recipes.filter((recipe) => {
             let isRecipeValid = true;
@@ -56,9 +57,6 @@ class Search extends Api {
         //la description de la recette.
 
         // L'entrée utilisateur peut être en majuscules ou en minuscule donc faire en sorte de comparer les entréer utilisateur et les données avec des .lowercase()
-
-
-
 
     }
     async searchByText() {
