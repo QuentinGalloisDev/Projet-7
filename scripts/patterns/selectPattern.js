@@ -12,7 +12,7 @@ class Select {
     //     console.log(tableau)
     //     return tableau
     // }
-    createSelectBox(handleTagCliked, tagDeleted) {
+    createSelectBox(handleTagCliked, tagDeleted, displayTagSelected) {
 
         const selectBox = document.querySelector(`.select-box-${this._class}`)
         // selectBox.setAttribute("class", `select-box`)
@@ -57,6 +57,19 @@ class Select {
                 let text = optionsListStringLe.innerHTML;
                 soValue.value = text
                 handleTagCliked(text, this._class)
+
+
+                // //test apparition des tags suivant les recettes selectionnés.
+                // let tagToShow = new Search('/PetitsPlats/recipes.json', this.tabOfTags, this.searchInputText).searchByTags().then((result) => {
+                //     console.log(result)
+                //     //Faire une recherche suivant les recettes 
+                // })
+
+                // options.innerHTML = ''
+                displayTagSelected()
+
+                //test apparition des tags suivant les recettes selectionnés.
+
 
                 // On utilise une fonction de rappel pour récupérer les tags.
                 // tabOfTags.push(text)
