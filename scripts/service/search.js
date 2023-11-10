@@ -3,15 +3,24 @@ class Search extends Api {
         super(url)
         this.tags = tags;
         this.textSearch = textSearch
-        this.recipes = recipes
+        // this.recipes = recipes
     }
     async getRecipes() {
 
         return await this.get()
     }
-    async searchByTags(recipes) {
+    // async 
+    searchByTags(recipes) {
         // let recipes = await this.get()
-        recipes = this.recipes
+        // recipes = await this.getRecipes()
+
+        if (this.textSearch != '') {
+            recipes = this.searchByText(recipes)
+            console.log(recipes)
+        }
+        // recipes = await this.searchByText(recipes)
+
+
 
         const recipesFilteredByTags = recipes.filter((recipe) => {
             let isRecipeValid = true;
@@ -49,6 +58,9 @@ class Search extends Api {
         console.log(recipesFilteredByTags)
         return recipesFilteredByTags
 
+
+
+
         // Recherche textuelle
 
         //Le système recherche des recettes correspondant à l’entrée utilisateur dans :
@@ -59,8 +71,16 @@ class Search extends Api {
         // L'entrée utilisateur peut être en majuscules ou en minuscule donc faire en sorte de comparer les entréer utilisateur et les données avec des .lowercase()
 
     }
-    async searchByText() {
-        let recipes = await this.get()
+    // async
+    searchByText(recipes) {
+        // recipes = await this.getRecipes()
+        // let recipeByTag = this.searchByTags(recipes)
+        if (this.tags.length > 0) {
+            // recipes = await this.searchByTags(recipes)
+            recipes = this.searchByTags(recipes)
+            console.log(recipes)
+        }
+
         const recipesFilteredByText = recipes.filter((recipe) => {
             let isRecipeHasText = true;
 
@@ -71,6 +91,7 @@ class Search extends Api {
             //Si on ne trouve pas d'ingredients on passe le flag à false
 
             const isRecipeHasTextInDescription = this.textSearch.test(recipe.description.toLowerCase())
+
             if (!isRecipeHasTextInName && !isRecipeHasTextInIngredients && !isRecipeHasTextInDescription) {
                 isRecipeHasText = false
             }
@@ -81,3 +102,10 @@ class Search extends Api {
         return recipesFilteredByText
     }
 }
+
+/*  1. Recherche par texte => recipes total => recipes par tags => recherche texte
+     Si valid === false ===> recipes tags
+    2. Recherche par tags => recipes total => recipes par texte (soit > 3 soit tout) => recherche par tags
+    3. La liste => tags des recettes - tags selectionnés
+    4. Vérifier le delete de tags sur les appliances et ustensils 
+*/ 

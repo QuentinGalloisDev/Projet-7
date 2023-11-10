@@ -28,24 +28,25 @@ class App {
         this.tabOfTags.push({ text, type })
         console.log(this.tabOfTags)
 
-        let results = new Search('/PetitsPlats/recipes.json', this.tabOfTags, this.searchInputText, recipes).searchByTags().then((result) => {
-            results = result
-            console.log(results)
-            this.$recipesContainer.innerHTML = ""
-            this.displayRecipes(results)
-        })
+        let results = new Search('/PetitsPlats/recipes.json', this.tabOfTags, this.searchInputText).searchByTags(recipes)
+        // results = result
+        console.log(results)
+        this.$recipesContainer.innerHTML = ""
+        this.displayRecipes(results)
+
         // const results = new Search('/PetitsPlats/recipes.json', this.tabOfTags).search()
         // Relancer l'affichage selon results
     }
     onTagDeleted(textTagClose, recipes) {
         this.tabOfTags = this.tabOfTags.filter((tagClose) => tagClose.text != textTagClose)
         console.log(this.tabOfTags)
-        if (this.tabOfTags.length != 0) {
+        if (this.tabOfTags.length > 0) {
             let results = new Search('/PetitsPlats/recipes.json', this.tabOfTags, this.searchInputText, recipes).searchByTags().then((result) => {
                 results = result
                 console.log(results)
                 this.$recipesContainer.innerHTML = ""
                 this.displayRecipes(results)
+                this.displayTagsSelect(recipes)
 
             })
         }
@@ -62,161 +63,106 @@ class App {
     //tagType en param
     displayTagsSelect(recipes) {
         // Au clic faire une recherche dans les tags pour récupérer tout les tags des recettes qu s'affichent.
-        let tagToShow = new Search('/PetitsPlats/recipes.json', this.tabOfTags, this.searchInputText, recipes).searchByTags().then((result) => {
-            let tagIngredientsToShow = this.recipeApi.getTagIngredients(result).then((response) => {
-                tagIngredientsToShow = response
-                console.log(tagIngredientsToShow)
-                let selectTagIngredientsToErase = document.querySelector(".select-box-ingredients")
-                selectTagIngredientsToErase.innerHTML = ""
-                // Rappeler un select avec les tags ingredients.
+        let tagToShow = new Search('/PetitsPlats/recipes.json', this.tabOfTags, this.searchInputText).searchByTags(recipes)
 
-                let selectTagIngredients = new Select(tagIngredientsToShow, "ingredients")
-                // console.log(selectTagIngredients._tags)
-
-                //  La fonction onNewTagAdded étant appelé dans le selectPattern, la portée est réduite et on perd le this.
-                // On bind le this à l'éxécution de la fonction pour pouvoir le réutilisé.
-                // Une autre solution serait de faire une fonction fléchée qui exécute la fonction que l'on souhaite:
-                // (text, type)=> this.onNewTagAdded(text,type)
-                this.$selects.appendChild(selectTagIngredients.createSelectBox(
-                    // this.onNewTagAdded.bind(this),
-                    // this.onTagDeleted.bind(this)
-                    (text, type, recipesData) => this.onNewTagAdded(text, type, recipes),
-                    (text, recipesData) => this.onTagDeleted(text, recipes),
-                    //test 
-
-                    (recipesData) => this.displayTagsSelect(recipes)
-                    //test 
-                ))
+        let tagIngredientsToShow = this.recipeApi.getTagIngredients(tagToShow).then((response) => {
+            tagIngredientsToShow = response
+            // Enlever le tag déjà sélectionné.
 
 
-            })
+            let selectTagIngredientsToErase = document.querySelector(".select-box-ingredients")
+            selectTagIngredientsToErase.innerHTML = ""
+            // Rappeler un select avec les tags ingredients.
+            let ingredientType = this.tabOfTags.filter((type) => type.type === "ingredients")
+            // Transformer le tableau d'objets en liste d'ingredients comme tagIngredientsToShow
+            ingredientType = ingredientType.map(ingredient => ingredient.text)
+            console.log(ingredientType)
+            // filtrer pour récupérer les tags qui ne correspondent pas au texte dans ingredientType. Faire une itération dans ingredientType.
+            tagIngredientsToShow = tagIngredientsToShow.filter((ingredient) => {
+                if (ingredientType.includes(ingredient)) {
+                    return false
+                }
+                else {
+                    return true
+                }
+            }
+            )
 
-            let tagApplianceToShow = this.recipeApi.getTagAppliance(result).then((response) => {
-                tagApplianceToShow = response
-                console.log(tagApplianceToShow)
-                let selectTagApplianceToErase = document.querySelector(".select-box-appliance")
-                selectTagApplianceToErase.innerHTML = ""
-                let selectTagAppliance = new Select(tagApplianceToShow, "appliance")
-                // console.log(selectTagIngredients._tags)
 
-                //  La fonction onNewTagAdded étant appelé dans le selectPattern, la portée est réduite et on perd le this.
-                // On bind le this à l'éxécution de la fonction pour pouvoir le réutilisé.
-                // Une autre solution serait de faire une fonction fléchée qui exécute la fonction que l'on souhaite:
-                // (text, type)=> this.onNewTagAdded(text,type)
-                this.$selects.appendChild(selectTagAppliance.createSelectBox(
-                    // this.onNewTagAdded.bind(this),
-                    // this.onTagDeleted.bind(this)
-                    (text, type, recipesData) => this.onNewTagAdded(text, type, recipes),
-                    (text, recipesData) => this.onTagDeleted(text, recipes),
-                    //test 
 
-                    (recipesData) => this.displayTagsSelect(recipes)
-                    //test 
-                ))
-            })
+            console.log(tagIngredientsToShow)
+            let selectTagIngredients = new Select(tagIngredientsToShow, "ingredients", this.tabOfTags)
 
-            let tagUstensilsToShow = this.recipeApi.getTagUstensils(result).then((response) => {
-                tagUstensilsToShow = response
-                console.log(tagUstensilsToShow)
-                let selectTagUstensilsToErase = document.querySelector(".select-box-ustensils")
-                selectTagUstensilsToErase.innerHTML = ""
-                let selectTagUstensils = new Select(tagUstensilsToShow, "ustensils")
-                // console.log(selectTagIngredients._tags)
 
-                //  La fonction onNewTagAdded étant appelé dans le selectPattern, la portée est réduite et on perd le this.
-                // On bind le this à l'éxécution de la fonction pour pouvoir le réutilisé.
-                // Une autre solution serait de faire une fonction fléchée qui exécute la fonction que l'on souhaite:
-                // (text, type)=> this.onNewTagAdded(text,type)
-                this.$selects.appendChild(selectTagUstensils.createSelectBox(
-                    // this.onNewTagAdded.bind(this),
-                    // this.onTagDeleted.bind(this)
-                    (text, type, recipesData) => this.onNewTagAdded(text, type, recipes),
-                    (text, recipesData) => this.onTagDeleted(text, recipes),
-                    //test 
 
-                    (recipesData) => this.displayTagsSelect(recipes)
-                    //test 
-                ))
-            })
+            //  La fonction onNewTagAdded étant appelé dans le selectPattern, la portée est réduite et on perd le this.
+            // On bind le this à l'éxécution de la fonction pour pouvoir le réutilisé.
+            // Une autre solution serait de faire une fonction fléchée qui exécute la fonction que l'on souhaite:
+            // (text, type)=> this.onNewTagAdded(text,type)
+            this.$selects.appendChild(selectTagIngredients.createSelectBox(
+                // this.onNewTagAdded.bind(this),
+                // this.onTagDeleted.bind(this)
+                (text, type, recipesData) => this.onNewTagAdded(text, type, recipes),
+                (text, recipesData) => this.onTagDeleted(text, recipes),
+                //test 
+
+                (recipesData) => this.displayTagsSelect(recipes)
+                //test 
+            ))
+
+
         })
 
+        let tagApplianceToShow = this.recipeApi.getTagAppliance(tagToShow).then((response) => {
+            tagApplianceToShow = response
+            console.log(tagApplianceToShow)
+            let selectTagApplianceToErase = document.querySelector(".select-box-appliance")
+            selectTagApplianceToErase.innerHTML = ""
+            let applianceType = this.tabOfTags.filter((type) => type.type === "appliance")
+            let selectTagAppliance = new Select(tagApplianceToShow, "appliance", this.tabOfTags)
+            console.log(applianceType)
 
-        //test apparition des tags suivant les recettes selectionnés.
-        // if (tagType == "ingredients") {
-        //     let tagToShow = new Search('/PetitsPlats/recipes.json', this.tabOfTags, this.searchInputText, recipes).searchByTags().then((result) => {
-        //         tagToShow = this.recipeApi.getTagIngredients(result).then((response) => {
-        //             tagToShow = response
-        //             console.log(tagToShow)
+            //  La fonction onNewTagAdded étant appelé dans le selectPattern, la portée est réduite et on perd le this.
+            // On bind le this à l'éxécution de la fonction pour pouvoir le réutilisé.
+            // Une autre solution serait de faire une fonction fléchée qui exécute la fonction que l'on souhaite:
+            // (text, type)=> this.onNewTagAdded(text,type)
+            this.$selects.appendChild(selectTagAppliance.createSelectBox(
+                // this.onNewTagAdded.bind(this),
+                // this.onTagDeleted.bind(this)
+                (text, type, recipesData) => this.onNewTagAdded(text, type, recipes),
+                (text, recipesData) => this.onTagDeleted(text, recipes),
+                //test 
 
-        //             let selectBoxIngredients = document.querySelector(".select-box-ingredients")
-        //             selectBoxIngredients.innerHTML = ""
+                (recipesData) => this.displayTagsSelect(recipes)
+                //test 
+            ))
+        })
 
-        //             let selectTagIngredients = new Select(tagToShow, "ingredients")
-        //             //Fonctionne mais le selectTags se déplace à la fin des tags sans doute a cause du insertadjacenthtml afterbegin.
-        //             this.$selects.appendChild(selectTagIngredients.createSelectBox(
-        //                 // this.onNewTagAdded.bind(this),
-        //                 // this.onTagDeleted.bind(this)
-        //                 (text, type, recipes) => this.onNewTagAdded(text, type, recipeFilteredByText),
-        //                 (text, recipes) => this.onTagDeleted(text, recipeFilteredByText)
-        //             ))
-        //             //TagToShow = tous les ingrédients à mettre dans les tags lors de la selection de l'user. 
-        //             console.log(selectTagIngredients._tags)
-        //             return selectTagIngredients._tags
-        //         })
+        let tagUstensilsToShow = this.recipeApi.getTagUstensils(tagToShow).then((response) => {
+            tagUstensilsToShow = response
+            console.log(tagUstensilsToShow)
+            let selectTagUstensilsToErase = document.querySelector(".select-box-ustensils")
+            selectTagUstensilsToErase.innerHTML = ""
+            let ustensilsType = this.tabOfTags.filter((type) => type.type === "ustensils")
+            let selectTagUstensils = new Select(tagUstensilsToShow, "ustensils", this.tabOfTags)
+            console.log(ustensilsType)
 
-        //         //Faire une recherche suivant les recettes 
-        //     })
-        // }
-        // else if (tagType == "ustensils") {
-        //     let tagToShow = new Search('/PetitsPlats/recipes.json', this.tabOfTags, this.searchInputText, recipes).searchByTags().then((result) => {
-        //         tagToShow = this.recipeApi.getTagUstensils(result).then((response) => {
-        //             tagToShow = response
-        //             console.log(tagToShow)
-        //             //TagToShow = tous les ingrédients à mettre dans les tags lors de la selection de l'user.
-        //             let selectBoxIngredients = document.querySelector(".select-box-ustensils")
-        //             selectBoxIngredients.innerHTML = ""
+            //  La fonction onNewTagAdded étant appelé dans le selectPattern, la portée est réduite et on perd le this.
+            // On bind le this à l'éxécution de la fonction pour pouvoir le réutilisé.
+            // Une autre solution serait de faire une fonction fléchée qui exécute la fonction que l'on souhaite:
+            // (text, type)=> this.onNewTagAdded(text,type)
+            this.$selects.appendChild(selectTagUstensils.createSelectBox(
+                // this.onNewTagAdded.bind(this),
+                // this.onTagDeleted.bind(this)
+                (text, type, recipesData) => this.onNewTagAdded(text, type, recipes),
+                (text, recipesData) => this.onTagDeleted(text, recipes),
+                //test 
 
-        //             let selectTagIngredients = new Select(tagToShow, "ustensils")
-        //             //Fonctionne mais le selectTags se déplace à la fin des tags sans doute a cause du insertadjacenthtml afterbegin.
-        //             this.$selects.appendChild(selectTagIngredients.createSelectBox(
-        //                 // this.onNewTagAdded.bind(this),
-        //                 // this.onTagDeleted.bind(this)
-        //                 (text, type, recipes) => this.onNewTagAdded(text, type, recipeFilteredByText),
-        //                 (text, recipes) => this.onTagDeleted(text, recipeFilteredByText)
-        //             ))
-        //             console.log(selectTagIngredients._tags)
-        //             return selectTagIngredients._tags
-        //         })
+                (recipesData) => this.displayTagsSelect(recipes)
+                //test 
+            ))
+        })
 
-        //         //Faire une recherche suivant les recettes 
-
-        //     })
-        // }
-        // else if (tagType == "appliance") {
-        //     let tagToShow = new Search('/PetitsPlats/recipes.json', this.tabOfTags, this.searchInputText, recipes).searchByTags().then((result) => {
-        //         tagToShow = this.recipeApi.getTagAppliance(result).then((response) => {
-        //             tagToShow = response
-        //             console.log(tagToShow)
-        //             //TagToShow = tous les ingrédients à mettre dans les tags lors de la selection de l'user.
-        //             let selectBoxIngredients = document.querySelector(".select-box-appliance")
-        //             selectBoxIngredients.innerHTML = ""
-
-        //             let selectTagIngredients = new Select(tagToShow, "appliance")
-        //             //Fonctionne mais le selectTags se déplace à la fin des tags sans doute a cause du insertadjacenthtml afterbegin.
-        //             this.$selects.appendChild(selectTagIngredients.createSelectBox(
-        //                 // this.onNewTagAdded.bind(this),
-        //                 // this.onTagDeleted.bind(this)
-        //                 (text, type, recipes) => this.onNewTagAdded(text, type, recipeFilteredByText),
-        //                 (text, recipes) => this.onTagDeleted(text, recipeFilteredByText)
-        //             ))
-        //             console.log(selectTagIngredients._tags)
-        //             return selectTagIngredients._tags
-        //         })
-
-        //         //Faire une recherche suivant les recettes 
-
-        //     })
-        // }
 
     }
     //test
@@ -263,7 +209,7 @@ class App {
             // this.onNewTagAdded.bind(this),
             // this.onTagDeleted.bind(this)
             (text, type, recipes) => this.onNewTagAdded(text, type, recipesData),
-            (text, recipes) => this.onTagDeleted(text, type, recipesData),
+            (text, recipes) => this.onTagDeleted(text, recipesData),
             //test 
 
             (recipes) => this.displayTagsSelect(recipesData)
@@ -276,7 +222,7 @@ class App {
             // this.onNewTagAdded.bind(this),
             // this.onTagDeleted.bind(this)
             (text, type, recipes) => this.onNewTagAdded(text, type, recipesData),
-            (text, recipes) => this.onTagDeleted(text, type, recipesData),
+            (text, recipes) => this.onTagDeleted(text, recipesData),
             //test 
 
             (recipes) => this.displayTagsSelect(recipesData)
@@ -289,9 +235,9 @@ class App {
         inputSearch.addEventListener("keyup", (event) => {
             event.preventDefault()
             // valid renvoie true si le pattern de la barre de recherche est valide.
-            let valid = document.querySelector("#inputForTextualSearch").checkValidity();
+            let validTextSearch = document.querySelector("#inputForTextualSearch").checkValidity();
 
-            if (valid === true) {
+            if (validTextSearch) {
 
                 //Renvoie le contenu du champ
                 console.log(event.target.value)
@@ -306,124 +252,80 @@ class App {
 
                 let recipeToShowFilteredByText = new Search('/PetitsPlats/recipes.json', this.tabOfTags, this.searchInputText)
                 console.log(this.searchInputText)
-                console.log(recipeToShowFilteredByText.searchByText())
+                console.log(recipeToShowFilteredByText.searchByText(recipesData))
                 let recipeFilteredByText = []
-                recipeToShowFilteredByText.searchByText().then((recipe) => {
-                    recipeFilteredByText = recipe
-                    console.log(recipeFilteredByText)
-                    this.$recipesContainer.innerHTML = ""
-                    this.displayRecipes(recipeFilteredByText)
 
-                    //  On efface les selecttags et on en remet avec les nouvelles données.
+                recipeFilteredByText = recipeToShowFilteredByText.searchByText(recipesData)
+                console.log(recipeFilteredByText)
+                this.$recipesContainer.innerHTML = ""
+                this.displayRecipes(recipeFilteredByText)
 
-                    // Select ingredients
-                    //Créer un tableau de tout les ingrédients
-                    let recupTagIngredients = this.recipeApi.getTagIngredients(recipeFilteredByText).then((tagsIngredient) => {
-                        recupTagIngredients = tagsIngredient
-                        console.log(recupTagIngredients)
-                        let selectBoxIngredients = document.querySelector(".select-box-ingredients")
-                        selectBoxIngredients.innerHTML = ""
+                //  On efface les selecttags et on en remet avec les nouvelles données.
 
-                        let selectTagIngredients = new Select(recupTagIngredients, "ingredients")
-                        //Fonctionne mais le selectTags se déplace à la fin des tags sans doute a cause du insertadjacenthtml afterbegin.
-                        this.$selects.appendChild(selectTagIngredients.createSelectBox(
-                            // this.onNewTagAdded.bind(this),
-                            // this.onTagDeleted.bind(this)
-                            (text, type, recipes) => this.onNewTagAdded(text, type, recipeFilteredByText),
-                            (text, recipes) => this.onTagDeleted(text, recipeFilteredByText),
-                            //test 
+                // Select ingredients
+                //Créer un tableau de tout les ingrédients
+                let recupTagIngredients = this.recipeApi.getTagIngredients(recipeFilteredByText).then((tagsIngredient) => {
+                    recupTagIngredients = tagsIngredient
+                    console.log(recupTagIngredients)
+                    let selectBoxIngredients = document.querySelector(".select-box-ingredients")
+                    selectBoxIngredients.innerHTML = ""
 
-                            (recipes) => this.displayTagsSelect(recipeFilteredByText)
-                        ))
-                    })
-                    //Select ustensils
-                    let recupTagUstensils = this.recipeApi.getTagUstensils(recipeFilteredByText).then((tagUstensils) => {
-                        recupTagUstensils = tagUstensils
-                        console.log(recupTagUstensils)
-                        let selectBoxUstensils = document.querySelector(".select-box-ustensils")
-                        selectBoxUstensils.innerHTML = ""
+                    let selectTagIngredients = new Select(recupTagIngredients, "ingredients")
+                    //Fonctionne mais le selectTags se déplace à la fin des tags sans doute a cause du insertadjacenthtml afterbegin.
+                    this.$selects.appendChild(selectTagIngredients.createSelectBox(
+                        // this.onNewTagAdded.bind(this),
+                        // this.onTagDeleted.bind(this)
+                        (text, type, recipes) => this.onNewTagAdded(text, type, recipeFilteredByText),
+                        (text, recipes) => this.onTagDeleted(text, recipeFilteredByText),
+                        //test 
 
-                        let selectTagUstensils = new Select(recupTagUstensils, "ustensils")
-                        this.$selects.appendChild(selectTagUstensils.createSelectBox(
-                            (text, type, recipes) => this.onNewTagAdded(text, type, recipeFilteredByText),
-                            (text, recipes) => this.onTagDeleted(text, recipeFilteredByText),
-                            //test 
-
-                            (recipes) => this.displayTagsSelect(recipeFilteredByText)
-                        ))
-                    })
-                    //Select Appliance
-                    let recupTagAppliance = this.recipeApi.getTagAppliance(recipeFilteredByText).then((tagAppliance) => {
-                        recupTagAppliance = tagAppliance
-                        console.log(recupTagAppliance)
-                        let selectBoxAppliance = document.querySelector(".select-box-appliance")
-                        selectBoxAppliance.innerHTML = ""
-
-                        let selectTagAppliance = new Select(recupTagAppliance, "appliance")
-                        this.$selects.appendChild(selectTagAppliance.createSelectBox(
-                            (text, type, recipes) => this.onNewTagAdded(text, type, recipeFilteredByText),
-                            (text, recipes) => this.onTagDeleted(text, recipeFilteredByText),
-                            //test 
-
-                            (recipes) => this.displayTagsSelect(recipeFilteredByText)
-                        ))
-                    })
-                    // Si la recherche textuelle ne donne pas de résultat afficher le message d'erreur.
-
-                    if (this.tabOfTags.length === 0 && recipeFilteredByText.length === 0) {
-                        let errorMsg = document.querySelector(".noRecipeFound")
-                        errorMsg.style.display = "block"
-                    }
+                        (recipes) => this.displayTagsSelect(recipeFilteredByText)
+                    ))
                 })
+                //Select ustensils
+                let recupTagUstensils = this.recipeApi.getTagUstensils(recipeFilteredByText).then((tagUstensils) => {
+                    recupTagUstensils = tagUstensils
+                    console.log(recupTagUstensils)
+                    let selectBoxUstensils = document.querySelector(".select-box-ustensils")
+                    selectBoxUstensils.innerHTML = ""
+
+                    let selectTagUstensils = new Select(recupTagUstensils, "ustensils")
+                    this.$selects.appendChild(selectTagUstensils.createSelectBox(
+                        (text, type, recipes) => this.onNewTagAdded(text, type, recipeFilteredByText),
+                        (text, recipes) => this.onTagDeleted(text, recipeFilteredByText),
+                        //test 
+
+                        (recipes) => this.displayTagsSelect(recipeFilteredByText)
+                    ))
+                })
+                //Select Appliance
+                let recupTagAppliance = this.recipeApi.getTagAppliance(recipeFilteredByText).then((tagAppliance) => {
+                    recupTagAppliance = tagAppliance
+                    console.log(recupTagAppliance)
+                    let selectBoxAppliance = document.querySelector(".select-box-appliance")
+                    selectBoxAppliance.innerHTML = ""
+
+                    let selectTagAppliance = new Select(recupTagAppliance, "appliance")
+                    this.$selects.appendChild(selectTagAppliance.createSelectBox(
+                        (text, type, recipes) => this.onNewTagAdded(text, type, recipeFilteredByText),
+                        (text, recipes) => this.onTagDeleted(text, recipeFilteredByText),
+                        //test 
+
+                        (recipes) => this.displayTagsSelect(recipeFilteredByText)
+                    ))
+                })
+                // Si la recherche textuelle ne donne pas de résultat afficher le message d'erreur.
+
+                if (this.tabOfTags.length === 0 && recipeFilteredByText.length === 0) {
+                    let errorMsg = document.querySelector(".noRecipeFound")
+                    errorMsg.style.display = "block"
+                }
+
 
 
             }
             else {
-                // Si l'entrée n'est pas valide, réafficher toutes les recettes
-                this.$recipesContainer.innerHTML = ""
-                this.displayRecipes(recipesData)
-
-                let selectBoxIngredients = document.querySelector(".select-box-ingredients")
-                selectBoxIngredients.innerHTML = ""
-
-                this.$selects.appendChild(selectTagIngredients.createSelectBox(
-                    // this.onNewTagAdded.bind(this),
-                    // this.onTagDeleted.bind(this)
-                    (text, type, recipes) => this.onNewTagAdded(text, type, recipesData),
-                    (text, recipes) => this.onTagDeleted(text, recipesData),
-                    //test 
-
-                    (recipes) => this.displayTagsSelect(recipesData)
-                    //test 
-                ))
-
-                let selectBoxUstensils = document.querySelector(".select-box-ustensils")
-                selectBoxUstensils.innerHTML = ""
-
-                this.$selects.appendChild(selectTagUstensils.createSelectBox(
-                    // this.onNewTagAdded.bind(this),
-                    // this.onTagDeleted.bind(this)
-                    (text, type, recipes) => this.onNewTagAdded(text, type, recipesData),
-                    (text, recipes) => this.onTagDeleted(text, type, recipesData),
-                    //test 
-
-                    (recipes) => this.displayTagsSelect(recipesData)
-                    //test 
-                ))
-
-                let selectBoxAppliance = document.querySelector(".select-box-appliance")
-                selectBoxAppliance.innerHTML = ""
-
-                this.$selects.appendChild(selectTagAppliance.createSelectBox(
-                    // this.onNewTagAdded.bind(this),
-                    // this.onTagDeleted.bind(this)
-                    (text, type, recipes) => this.onNewTagAdded(text, type, recipesData),
-                    (text, recipes) => this.onTagDeleted(text, type, recipesData),
-                    //test 
-
-                    (recipes) => this.displayTagsSelect(recipesData)
-                    //test 
-                ))
+                this.searchInputText = ""
             }
         })
     }
