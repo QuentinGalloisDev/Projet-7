@@ -61,14 +61,17 @@ header #recipeSearch {
 /* Custom select with search */
 .selects {
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
+    width: 70%;
+    margin: 14px 18px 12px 30px;
+
 }
 
 .select-box-ingredients,
 .select-box-ustensils,
 .select-box-appliance {
     margin-top: 15px;
-    width: 22%;
+    width: 190px;
 }
 
 .select-option {
@@ -79,7 +82,7 @@ header #recipeSearch {
     width: 100%;
     background-color: #fff;
     color: #000;
-    border: 1px solid #000;
+    border: none;
     border-radius: 5px;
     cursor: pointer;
     font-size: 22px;
@@ -169,10 +172,10 @@ header #recipeSearch {
 .select-box-ustensils.active .content,
 .select-box-appliance.active .content {
     display: block;
-    border: 1px solid black;
+    border: none;
     border-top: none;
     padding: 15px 20px;
-    width: 22%;
+    width: 190px;
 }
 
 .select-box-ingredients.active .select-option::after,
@@ -196,7 +199,7 @@ header #recipeSearch {
     display: flex;
     width: 100%;
     flex-wrap: wrap;
-    justify-content: space-between;
+    justify-content: space-around;
     margin-top: 35px;
 }
 
@@ -209,7 +212,9 @@ header #recipeSearch {
     margin-bottom: 22px;
 }
 
-.cardRecipe *:not(img) {
+.cardRecipe h1,
+.cardRecipe .recipeDescription,
+.cardRecipe .ingredients {
     padding: 0px 15px;
 }
 
@@ -219,6 +224,11 @@ header #recipeSearch {
     object-position: center;
     object-fit: cover;
     border-radius: 21px 21px 0px 0px;
+}
+
+.cardRecipe h1 {
+    display: flex;
+    justify-content: flex-start;
 }
 
 .cardRecipe h2 {

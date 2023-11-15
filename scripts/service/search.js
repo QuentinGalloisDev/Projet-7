@@ -1,5 +1,5 @@
 class Search extends Api {
-    constructor(url, tags, textSearch, recipes) {
+    constructor(url, tags, textSearch) {
         super(url)
         this.tags = tags;
         this.textSearch = textSearch
@@ -14,13 +14,7 @@ class Search extends Api {
         // let recipes = await this.get()
         // recipes = await this.getRecipes()
 
-        if (this.textSearch != '') {
-            recipes = this.searchByText(recipes)
-            console.log(recipes)
-        }
         // recipes = await this.searchByText(recipes)
-
-
 
         const recipesFilteredByTags = recipes.filter((recipe) => {
             let isRecipeValid = true;
@@ -75,11 +69,22 @@ class Search extends Api {
     searchByText(recipes) {
         // recipes = await this.getRecipes()
         // let recipeByTag = this.searchByTags(recipes)
-        if (this.tags.length > 0) {
-            // recipes = await this.searchByTags(recipes)
+        // if (this.tags.length > 0) {
+        //     // recipes = await this.searchByTags(recipes)
+        //     recipes = this.searchByTags(recipes)
+        //     console.log(recipes)
+        // }
+
+        let textvalid = document.querySelector("#inputForTextualSearch").checkValidity()
+        if (textvalid == true) {
+
             recipes = this.searchByTags(recipes)
-            console.log(recipes)
+
         }
+        else {
+            console.log(textvalid)
+        }
+
 
         const recipesFilteredByText = recipes.filter((recipe) => {
             let isRecipeHasText = true;
