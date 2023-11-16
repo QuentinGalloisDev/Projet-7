@@ -5,19 +5,19 @@ class App {
         this.$header = document.querySelector("header")
         this.$selects = document.querySelector(".selects")
         // Insérer le select après le header
-        this.recipeApi = new RecipeApi('/./PetitsPlats/recipes.json')
+        this.recipeApi = new RecipeApi('../PetitsPlats/recipes.json')
         //Créer un tableau dans lequel il y aura les tags 
         this.tabOfTags = [];
         this.searchInputText = '';
         // console.log(this.tabOfTags)
-        this.searchingByText = new Search('/./PetitsPlats/recipes.json', this.tabOfTags, this.searchInputText)
+        this.searchingByText = new Search('../PetitsPlats/recipes.json', this.tabOfTags, this.searchInputText)
         this.noRecipeFoundMessage = document.querySelector(".noRecipeFound")
     }
     onNewTagAdded(text, type, recipes) {
         this.tabOfTags.push({ text, type })
         // console.log(this.tabOfTags)
 
-        let results = new Search('/./PetitsPlats/recipes.json', this.tabOfTags, this.searchInputText).searchByTags(recipes)
+        let results = new Search('../PetitsPlats/recipes.json', this.tabOfTags, this.searchInputText).searchByTags(recipes)
         // results = result
         console.log(results)
         this.$recipesContainer.innerHTML = ""
@@ -31,7 +31,7 @@ class App {
         console.log(this.tabOfTags)
         let textValid = document.querySelector("#inputForTextualSearch").checkValidity()
         if (this.tabOfTags.length > 0) {
-            let results = new Search('/./PetitsPlats/recipes.json', this.tabOfTags, this.searchInputText).searchByTags(recipes)
+            let results = new Search('../PetitsPlats/recipes.json', this.tabOfTags, this.searchInputText).searchByTags(recipes)
             // results = result
             console.log(results)
             this.$recipesContainer.innerHTML = ""
@@ -40,7 +40,7 @@ class App {
         }
         else {
             if (textValid === true) {
-                recipes = new Search('/./PetitsPlats/recipes.json', this.tabOfTags, this.searchInputText).searchByText(recipes)
+                recipes = new Search('../PetitsPlats/recipes.json', this.tabOfTags, this.searchInputText).searchByText(recipes)
             }
             let recipesContainerToErase = document.querySelector(".recipesContainer")
             recipesContainerToErase.innerHTML = ""
@@ -54,7 +54,7 @@ class App {
     //tagType en param
     displayTagsSelect(recipes) {
         // Au clic faire une recherche dans les tags pour récupérer tout les tags des recettes qu s'affichent.
-        let tagToShow = new Search('/./PetitsPlats/recipes.json', this.tabOfTags, this.searchInputText).searchByTags(recipes)
+        let tagToShow = new Search('../PetitsPlats/recipes.json', this.tabOfTags, this.searchInputText).searchByTags(recipes)
         let selectTagIngredientsToErase = document.querySelector(".select-box-ingredients")
         let tagIngredientsToShow = this.recipeApi.getTagIngredients(tagToShow).then((response) => {
             tagIngredientsToShow = response
@@ -245,7 +245,7 @@ class App {
                 let regexSearch = new RegExp('(?:' + userInput + ')')
                 this.searchInputText = regexSearch
 
-                let recipeToShowFilteredByText = new Search('/./PetitsPlats/recipes.json', this.tabOfTags, this.searchInputText)
+                let recipeToShowFilteredByText = new Search('../PetitsPlats/recipes.json', this.tabOfTags, this.searchInputText)
                 let recipeFilteredByText = []
 
                 recipeFilteredByText = recipeToShowFilteredByText.searchByText(recipesData)
@@ -314,7 +314,7 @@ class App {
                     this.$recipesContainer.innerHTML = ""
                     let recipeFilteredByTags = []
 
-                    let recipeToShowFilteredByTags = new Search('/./PetitsPlats/recipes.json', this.tabOfTags, this.searchInputText)
+                    let recipeToShowFilteredByTags = new Search('../PetitsPlats/recipes.json', this.tabOfTags, this.searchInputText)
 
                     recipeFilteredByTags = recipeToShowFilteredByTags.searchByTags(recipesData)
 
