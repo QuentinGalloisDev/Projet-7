@@ -9,7 +9,7 @@ class recipeCard {
         let card = document.createElement("div")
         card.setAttribute("id", `${this._id}`)
         card.setAttribute("class", "cardRecipe")
-        card.insertAdjacentHTML("afterbegin", `<img src="${this._recipe.image}">
+        card.insertAdjacentHTML("afterbegin", `<img src="./${this._recipe.image}">
         <h1>${this._recipe.name}</h1>
         
         <div class="recipeDescription">
