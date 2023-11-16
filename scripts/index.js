@@ -5,7 +5,7 @@ class App {
         this.$header = document.querySelector("header")
         this.$selects = document.querySelector(".selects")
         // Insérer le select après le header
-        this.recipeApi = new RecipeApi('./PetitsPlats/recipes.json')
+        this.recipeApi = new RecipeApi('PetitsPlats/recipes.json')
         //Créer un tableau dans lequel il y aura les tags 
         this.tabOfTags = [];
         this.searchInputText = '';
