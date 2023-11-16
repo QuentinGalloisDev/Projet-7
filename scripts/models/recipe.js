@@ -6,7 +6,7 @@ class Recipe {
         this._ingredients = data.ingredients
     }
     get image() {
-        return `/Images/PhotosLesPetitsPlats/${this._image}`
+        return `Images/PhotosLesPetitsPlats/${this._image}`
     }
     get name() {
         return this._name
