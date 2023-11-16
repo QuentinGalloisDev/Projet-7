@@ -1,14 +1,14 @@
-class Search extends Api {
-    constructor(url, tags, textSearch) {
-        super(url)
+class Search {
+    constructor(tags, textSearch) {
+        // super(url)
         this.tags = tags;
         this.textSearch = textSearch
         // this.recipes = recipes
     }
-    async getRecipes() {
+    // async getRecipes() {
 
-        return await this.get()
-    }
+    //     return await this.get()
+    // }
     // async 
     searchByTags(recipes) {
         // let recipes = await this.get()
