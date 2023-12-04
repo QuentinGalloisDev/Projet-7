@@ -64,39 +64,39 @@ class Search {
             recipes = this.searchByTags(recipes)
         }
         // Version avec méthode de l'objet array filter
-        const recipesFilteredByText = recipes.filter((recipe) => {
-            let isRecipeHasText = true;
-            const isRecipeHasTextInName = this.textSearch.test(recipe.name.toLowerCase())
-            const isRecipeHasTextInIngredients = recipe.ingredients.some((ingredient) => this.textSearch.test(ingredient.ingredient.toLowerCase()))
-            //Si on ne trouve pas d'ingredients on passe le flag à false
-            const isRecipeHasTextInDescription = this.textSearch.test(recipe.description.toLowerCase())
-            if (!isRecipeHasTextInName && !isRecipeHasTextInIngredients && !isRecipeHasTextInDescription) {
-                isRecipeHasText = false
-            }
-            return isRecipeHasText
-        });
+        // const recipesFilteredByText = recipes.filter((recipe) => {
+        //     let isRecipeHasText = true;
+        //     const isRecipeHasTextInName = this.textSearch.test(recipe.name.toLowerCase())
+        //     const isRecipeHasTextInIngredients = recipe.ingredients.some((ingredient) => this.textSearch.test(ingredient.ingredient.toLowerCase()))
+        //     //Si on ne trouve pas d'ingredients on passe le flag à false
+        //     const isRecipeHasTextInDescription = this.textSearch.test(recipe.description.toLowerCase())
+        //     if (!isRecipeHasTextInName && !isRecipeHasTextInIngredients && !isRecipeHasTextInDescription) {
+        //         isRecipeHasText = false
+        //     }
+        //     return isRecipeHasText
+        // });
 
-        return recipesFilteredByText
+        // return recipesFilteredByText
 
         // Version avec boucles natives
-        // let recipeByTextNative = []
-        // for (let i of recipes) {
-        //     if (this.textSearch.test(i.name.toLowerCase())) {
-        //         recipeByTextNative.push(i)
-        //     }
-        //     for (let ingredient of i.ingredients) {
-        //         if (this.textSearch.test(ingredient.ingredient.toLowerCase())) {
-        //             recipeByTextNative.push(i)
-        //         }
-        //     }
-        //     if (this.textSearch.test(i.description.toLowerCase())) {
-        //         recipeByTextNative.push(i)
-        //     }
+        let recipeByTextNative = []
+        for (let i of recipes) {
+            if (this.textSearch.test(i.name.toLowerCase())) {
+                recipeByTextNative.push(i)
+            }
+            for (let ingredient of i.ingredients) {
+                if (this.textSearch.test(ingredient.ingredient.toLowerCase())) {
+                    recipeByTextNative.push(i)
+                }
+            }
+            if (this.textSearch.test(i.description.toLowerCase())) {
+                recipeByTextNative.push(i)
+            }
 
-        // }
-        // recipeByTextNative = [...new Set(recipeByTextNative)]
-        // console.log(recipeByTextNative)
-        // return recipeByTextNative
+        }
+        recipeByTextNative = [...new Set(recipeByTextNative)]
+        console.log(recipeByTextNative)
+        return recipeByTextNative
     }
 }
 
